@@ -78,7 +78,47 @@ Además, los bits del inmediato se encuentran "desordenados" dentro de la instru
 
 #### Instrucciones tipo U
 
+Las instrucciones tipo U (*upper immediate*) poseen un operando de registro de destino rd, un campo inmediato de 20 bits y un opcode de 7 bits. Los bits restantes especifican los 20 bits más significativos de un inmediato de 32 bits.
+
+En lenguaje máquina, las instrucciones U tienen el siguiente formato (**Imagen_5**).
+
+![u-type](/imagenes/u_type.png "Formato instrucciones U")
+
+**Imagen_5** *Formato instrucciones U*
+
+La instrucción lui (*load upper *immediate) es un ejemplo de este formato. El inmediato de 32 bits resultante consiste en los 20 bits superiores codificados en la instrucción y ceros en los bits inferiores. Por ejemplo, tras la ejecución, el registro de destino podría contener un valor como 0x8CDEF000 donde la parte alta proviene del inmediato.
+
 #### Instrucciones tipo J
+
+Las instrucciones tipo J también poseen un registro de destino rd y un campo inmediato de 20 bits, pero en este caso, dichos bits especifican los 20 bits más significativos de un desplazamiento de salto (jump offset) de 21 bits.
+
+En lenguaje máquina, las instrucciones J tienen el siguiente formato (**Imagen_6**).
+
+![j-type](/imagenes/j_type.png "Formato instrucciones J")
+
+**Imagen_6** *Formato instrucciones J*
+
+Al igual que en las instrucciones tipo B, el bit menos significativo del inmediato es siempre 0 y no se codifica en la instrucción. Los bits restantes se encuentran mezclados (swizzled) dentro del campo inmediato de 20 bits.
+
+La instrucción jal (*jump and link*) realiza un salto a una dirección relativa al PC actual (la dirección de la propia instrucción jal). Si la instrucción en ensamblador no especifica un registro de destino rd, este campo asume por defecto el valor de ra (x1). Asimismo, el salto ordinario (j) se codifica como una instrucción jal con rd = 0.
+
+#### Codificación de valores inmediatos
+
+RISC-V utiliza valores inmediatos de 32 bits con signo (complemento a 2). Sin embargo, debido a las restricciones de tamaño de la instrucción, solo se codifican entre 12 y 21 bits del inmediato dentro de la instrucción misma.
+
+Como se observa en la distribución de formatos (Imagen_7):
+
+Tipos I y S: Codifican inmediatos de 12 bits con signo.
+
+Tipos J y B: Utilizan inmediatos de 21 y 13 bits con signo respectivamente, donde el bit menos significativo es siempre 0.
+
+Tipo U: Codifica los 20 bits superiores de un inmediato de 32 bits. Los 12 bits menos significativos valen 0.
+
+![imm_code](/imagenes/j_type.png "Formato instrucciones J")
+**Imagen_7** *Formato instrucciones J*
+
+El diseño de RV32I prioriza la regularidad para simplificar el hardware. A través de los diferentes formatos, se intenta mantener los bits del inmediato en las mismas posiciones de la instrucción tanto como sea posible. Esta consistencia minimiza la cantidad de cables y multiplexores necesarios para extraer y extender el signo del inmediato, aunque esto conlleve una codificación de instrucción más compleja (conocida como bit swizzling). Por ejemplo, el bit 31 de la instrucción siempre contiene el bit de signo del inmediato.
+
 
 ---
 
