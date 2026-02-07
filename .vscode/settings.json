@@ -1,7 +1,12 @@
 {
-  "cSpell.language": "en,es",
-  "cSpell.words": [
-    "ATILIO",
-    "SANTILLÁN"
-  ]
+    "cSpell.language": "en,es",
+    "cSpell.words": [
+        "addi", "andi", "ATILIO", "datapath", "direccionar", "funct",
+        "microarquitectura", "multiplexores", "operandos", "SANTILLÁN",
+        "slli", "srai", "srli", "xori"
+    ],
+    "cSpell.enabledFileTypes": {
+        "markdown": true,
+        "*": false
+    }
 }

@@ -1,0 +1,30 @@
+v 4
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/top_sin_io_tb.vhd" "99f78c1f8a93f332a8e27cea3cafc7b83b718b53" "20260206160248.827":
+  entity top_sin_io_tb at 1( 0) + 0 on 28;
+  architecture behavioral of top_sin_io_tb at 10( 132) + 0 on 29;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/top_sin_io.vhd" "603783c1a0443742c7fa60e9f676cc0abf3472ac" "20260206160248.696":
+  entity top_sin_io at 1( 0) + 0 on 26;
+  architecture structural of top_sin_io at 14( 235) + 0 on 27;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/tipos.vhd" "a1b39a129e7d7f192e9e4641b79a5c2c41c3d080" "20260206160247.697":
+  package tipos at 2( 2) + 0 on 11;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/rf_32x32.vhd" "adc644d0f0694b36f38f3f437be7d4c9f60531df" "20260206160247.886":
+  entity rf_32x32 at 1( 0) + 0 on 14;
+  architecture behavioral of rf_32x32 at 23( 595) + 0 on 15;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/ram_controller.vhd" "62f2ad636897654ef3e206f67f15cd74ddd90ac6" "20260206160248.466":
+  entity ram_controller at 1( 0) + 0 on 22;
+  architecture arch of ram_controller at 27( 929) + 0 on 23;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/ram_512x32.vhd" "ea0537d680e969910077614021f968a2b7cb7d43" "20260206160248.602":
+  entity ram_512x32 at 1( 0) + 0 on 24;
+  architecture behavioral of ram_512x32 at 21( 537) + 0 on 25;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/crossbar.vhd" "1a6deb3f0668dfd24d9728aa29cc2dae586942ea" "20260206160248.379":
+  entity crossbar at 1( 0) + 0 on 20;
+  architecture arch of crossbar at 24( 1296) + 0 on 21;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/cpu.vhd" "0d7a89de0c345a9e5c9171a510e180400a614cdc" "20260206160248.169":
+  entity cpu at 3( 30) + 0 on 18;
+  architecture arch of cpu at 20( 503) + 0 on 19;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/control_cpu.vhd" "16cb2005690149dd4f2d90bacdeaab0f622597ee" "20260206160247.764":
+  entity control_cpu at 2( 52) + 0 on 12;
+  architecture arch of control_cpu at 27( 840) + 0 on 13;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/alu.vhd" "51c53b96136caab79940bbf49376cba27dc2485a" "20260206160247.981":
+  entity alu at 1( 0) + 0 on 16;
+  architecture arch of alu at 20( 499) + 0 on 17;
