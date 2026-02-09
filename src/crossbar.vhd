@@ -4,7 +4,7 @@ use work.tipos.all;
 
 entity crossbar is 
     generic (
-        constant num_slaves : positive := 1
+        constant num_slaves : positive := 2
     );
     port (
         bus_maddr : in std_logic_vector(31 downto 0); -- direccion que envia el maestro

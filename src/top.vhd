@@ -135,7 +135,7 @@ begin
 
     u_phys_ram : entity ram_512x32
     generic map (
-        init_file => "../src/ram_init.txt"
+        init_file => "../src/ram_init_gpio.txt"
     )
     port map (
         clk      => clk,
@@ -172,7 +172,7 @@ begin
     );
 
     -- Instancia 6: Display 7 segmentos
-    u_siete_segmentos : entity display_7seg
+    u_siete_segmentos : entity siete_seg
     port map (
         D => numero_segmentos,
         Y => leds(6 downto 0)
