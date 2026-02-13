@@ -21,14 +21,15 @@ entity gpio_controller is
 end entity;
 
 architecture arch of gpio_controller is
+    signal sact : std_logic;
 begin
 
-    bus_sact <= '1' when bus_addr = GPIO_ADDR else '0';  
+    sact <= '1' when bus_addr = GPIO_ADDR else '0';  
     
     -- Salida de datos hacia el bus: Si nos seleccionan y quieren leer, enviamos el estado de los GPIOs de entrada
     process(all)
     begin
-        if bus_tms = '0' and bus_sact = '1' and nreset = '1' then
+        if bus_tms = '0' and sact = '1' and nreset = '1' then
             bus_dsm <= (31 downto 8 => '0') & gpio_in;
         else
             bus_dsm <= (others => '0');
@@ -38,11 +39,12 @@ begin
     process(clk)
     begin
         if rising_edge(clk) then
+            bus_sact <= sact; -- Señal de selección para el bus
             if nreset = '0' then
                 gpio_out <= (others => '0'); -- Reset
             else
                 -- Si nos seleccionan Y quieren escribir (WE='1')
-                if bus_tms = '1' and bus_sact = '1' then
+                if bus_tms = '1' and sact = '1' then
                     gpio_out <= bus_dms(3 downto 0);
                 end if;
             end if;

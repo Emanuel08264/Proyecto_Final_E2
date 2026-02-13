@@ -27,18 +27,20 @@ end ram_controller;
 architecture arch of ram_controller is
     signal sact : std_logic;
     signal reg_twidth : std_logic_vector (2 downto 0);
-    signal reg_offset : std_logic_vector (1 downto 0);
+    signal reg_offset : std_logic_vector (1 downto 0); 
     signal base_mask : std_logic_vector (3 downto 0); -- señal intermedia para la máscara base
     signal ram_dout_aligned : std_logic_vector (31 downto 0);
 begin
+    
     registros : process (clk)
     begin
         if rising_edge(clk) then
-            bus_sact <= sact;
+            bus_sact <= sact; -- da problema de timing pues el gpio actualiza combinacionalmente el bus_sact, pero el ram_controller lo hace en un proceso secuencial.
             reg_twidth <= bus_twidth;
             reg_offset <= bus_addr(1 downto 0); -- guarda el offset de la dirección
         end if;
     end process;
+
     sact <= ram_base(31 downto ram_addr_nbits + 2) ?= bus_addr(31 downto ram_addr_nbits + 2); 
     ram_we <= sact and bus_tms; -- Habilita escritura solo si la dirección está dentro del rango y tms está activo
     ram_addr <= bus_addr(ram_addr_nbits + 1 downto 2); -- Divide la direccion por 4. Despalaza 2 bits a la derecha

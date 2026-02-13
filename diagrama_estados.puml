@@ -1,0 +1,93 @@
+@startuml
+title Diagrama de Estados FSM - RISC-V Multiciclo
+hide empty description
+
+' CONFIGURACIÓN VISUAL PROFESIONAL
+skinparam state {
+  BackgroundColor White
+  BorderColor Black
+  ArrowColor #333333
+  FontName Helvetica
+  FontSize 12
+  AttributeFontSize 10
+}
+skinparam shadow false
+skinparam linetype ortho ' FUERZA LÍNEAS RECTAS (Estilo circuito)
+skinparam nodesep 40
+skinparam ranksep 60
+
+' 1. DEFINICIÓN DE GRUPOS (Para forzar orden visual)
+
+state "1. Fetch & Decode" as FetchDecode {
+    state LEE_MEM_PC : PC -> MemAddr
+    state CARGA_IR : MemData -> IR
+    state DECODIFICA : Analiza Opcode
+    
+    LEE_MEM_PC --> CARGA_IR
+    CARGA_IR --> DECODIFICA
+}
+
+state "2. Memory Access" as Memory {
+    state CALC_ADDR_LS : Suma Base + Offset
+    state CARGA_RD_DE_MEM : Mem -> RegFile
+    state ESCRIBE_RS2_A_MEM : RegFile -> Mem
+    
+    CALC_ADDR_LS --> CARGA_RD_DE_MEM : Op=LOAD
+    CALC_ADDR_LS --> ESCRIBE_RS2_A_MEM : Op=STORE
+}
+
+state "3. Arithmetic / Logic" as ALU {
+    state EJECUTA_R_TYPE : Op. entre Registros
+    state EJECUTA_I_TYPE : Op. con Inmediato
+    state EJECUTA_LUI : Carga Inmediato Alto
+    state EJECUTA_AUIPC : PC + Inmediato Alto
+}
+
+state "4. Control Flow" as Flow {
+    state EJECUTA_BRANCH : Verifica Condición
+    state EJECUTA_JAL_JALR : Guarda PC+4
+    state SALTO : Actualiza PC (Target)
+    
+    EJECUTA_BRANCH --> SALTO : Branch Taken
+    EJECUTA_JAL_JALR --> SALTO
+}
+
+' 2. CONEXIONES PRINCIPALES (Flujo hacia adelante)
+
+[*] --> INICIO
+INICIO --> LEE_MEM_PC
+
+' Dispatcher (Salidas del Deco)
+DECODIFICA -down-> CALC_ADDR_LS : LOAD/STORE
+DECODIFICA -down-> EJECUTA_R_TYPE : R-Type
+DECODIFICA -down-> EJECUTA_I_TYPE : I-Type
+DECODIFICA -down-> EJECUTA_LUI : LUI
+DECODIFICA -down-> EJECUTA_AUIPC : AUIPC
+DECODIFICA -down-> EJECUTA_BRANCH : BRANCH
+DECODIFICA -down-> EJECUTA_JAL_JALR : JAL/JALR
+
+' 3. RETORNOS AL FETCH (Ciclo)
+' Usamos color gris y punteado para diferenciar el retorno del flujo principal
+skinparam arrow {
+    Color<<Return>> #AAAAAA
+    Style<<Return>> dashed
+}
+
+CARGA_RD_DE_MEM -[#gray,dashed]-> LEE_MEM_PC : <<Return>>
+ESCRIBE_RS2_A_MEM -[#gray,dashed]-> LEE_MEM_PC : <<Return>>
+
+EJECUTA_R_TYPE -[#gray,dashed]-> LEE_MEM_PC : <<Return>>
+EJECUTA_I_TYPE -[#gray,dashed]-> LEE_MEM_PC : <<Return>>
+EJECUTA_LUI -[#gray,dashed]-> LEE_MEM_PC : <<Return>>
+EJECUTA_AUIPC -[#gray,dashed]-> LEE_MEM_PC : <<Return>>
+
+SALTO -[#gray,dashed]-> LEE_MEM_PC : <<Return>>
+EJECUTA_BRANCH -[#gray,dashed]-> LEE_MEM_PC : Not Taken <<Return>>
+
+' 4. TRUCOS DE LAYOUT (Invisible) para forzar la posición
+' Esto fuerza a que Fetch esté arriba y los otros bloques abajo en paralelo
+FetchDecode -[hidden]down-> Memory
+Memory -[hidden]right-> ALU
+ALU -[hidden]right-> Flow
+
+@enduml

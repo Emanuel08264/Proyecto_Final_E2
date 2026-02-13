@@ -7,7 +7,7 @@ use work.all;
 entity top is
     port (
         clk    : in std_logic;
-        nreset : in std_logic;
+        nreset_in : in std_logic;
 
         switches : in std_logic_vector(7 downto 0); -- 8 switches de entrada
         leds     : out std_logic_vector(7 downto 0) -- 8 LEDs de salida
@@ -18,6 +18,9 @@ architecture structural of top is
 
     -- Constante: Cantidad de esclavos conectados (Solo 1: RAM)
     constant N_SLAVES : positive := 2;
+
+    -- 0. SEÑALES DE RESET
+    signal system_nreset : std_logic;
 
     -- 1. SEÑALES DEL BUS (LADO MAESTRO - CPU)
     signal cpu_addr    : std_logic_vector(31 downto 0);
@@ -59,10 +62,20 @@ architecture structural of top is
 
 begin
 
+    -- INSTANCIA 0: MÓDULO DE RESET
+    u_reset : entity reset_al_inicializar_fpga
+    port map (
+        clk => clk,
+        nreset_in => nreset_in,
+        nreset_out => system_nreset
+    );
+
+    -- INSTANCIA 1: CPU
+
     u_cpu : entity cpu
     port map (
         clk         => clk,
-        nreset      => nreset,
+        nreset      => system_nreset,
         -- Salidas hacia el Bus
         bus_addr    => cpu_addr,
         bus_dms     => cpu_dms,
@@ -158,7 +171,7 @@ begin
     )
     port map (
         clk         => clk,
-        nreset      => nreset,
+        nreset      => system_nreset,
         -- Entradas desde el Crossbar (Bus compartido)
         bus_addr    => bus_s_addr,
         bus_dms     => bus_s_dms,
