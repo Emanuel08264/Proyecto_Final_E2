@@ -16,7 +16,7 @@ entity gpio_controller is
         bus_sact   : out std_logic; 
         -- Interfaz con los GPIOs físicos
         gpio_in  : in std_logic_vector(7 downto 0); -- 8 pines de entrada
-        gpio_out : out std_logic_vector(3 downto 0) 
+        gpio_out : out std_logic_vector(7 downto 0) 
     );
 end entity;
 
@@ -45,7 +45,7 @@ begin
             else
                 -- Si nos seleccionan Y quieren escribir (WE='1')
                 if bus_tms = '1' and sact = '1' then
-                    gpio_out <= bus_dms(3 downto 0);
+                    gpio_out <= bus_dms(7 downto 0);
                 end if;
             end if;
         end if;

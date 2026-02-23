@@ -1,48 +1,48 @@
 v 4
-file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/alu.vhd" "51c53b96136caab79940bbf49376cba27dc2485a" "20260212012039.263":
-  entity alu at 1( 0) + 0 on 18;
-  architecture arch of alu at 20( 499) + 0 on 19;
-file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/control_cpu.vhd" "16cb2005690149dd4f2d90bacdeaab0f622597ee" "20260212012039.039":
-  entity control_cpu at 2( 52) + 0 on 14;
-  architecture arch of control_cpu at 27( 840) + 0 on 15;
-file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/cpu.vhd" "0d7a89de0c345a9e5c9171a510e180400a614cdc" "20260212012039.414":
-  entity cpu at 3( 30) + 0 on 20;
-  architecture arch of cpu at 20( 503) + 0 on 21;
-file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/crossbar.vhd" "b35650d3bc50af8cea32d7c73c08e4fc198bc16e" "20260212012039.640":
-  entity crossbar at 1( 0) + 0 on 22;
-  architecture arch of crossbar at 24( 1296) + 0 on 23;
-file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/gpio_controller.vhd" "e8ab1388017ae4145728da44a5cd50afdf910e15" "20260212012039.967":
-  entity gpio_controller at 1( 0) + 0 on 28;
-  architecture arch of gpio_controller at 23( 774) + 0 on 29;
-file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/ram_512x32.vhd" "ea0537d680e969910077614021f968a2b7cb7d43" "20260212012039.863":
-  entity ram_512x32 at 1( 0) + 0 on 26;
-  architecture behavioral of ram_512x32 at 21( 537) + 0 on 27;
-file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/ram_controller.vhd" "efc9de8cf64cec1ccc77aaa5670cdb5ffd59aee5" "20260212012039.724":
-  entity ram_controller at 1( 0) + 0 on 24;
-  architecture arch of ram_controller at 27( 929) + 0 on 25;
-file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/reset_al_inicializar_fpga.vhd" "f1cd9fd7fbfbc942b666603174e97ec246985b8d" "20260212012038.942":
-  entity reset_al_inicializar_fpga at 1( 0) + 0 on 12;
-  architecture arch of reset_al_inicializar_fpga at 13( 341) + 0 on 13;
-file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/rf_32x32.vhd" "adc644d0f0694b36f38f3f437be7d4c9f60531df" "20260212012039.177":
-  entity rf_32x32 at 1( 0) + 0 on 16;
-  architecture behavioral of rf_32x32 at 23( 595) + 0 on 17;
-file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/siete_seg.vhd" "6c9c812827bc91572d9461b785a0f1486e967867" "20260212012040.092":
-  entity siete_seg at 2( 2) + 0 on 30;
-  architecture arch of siete_seg at 12( 197) + 0 on 31;
-file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/tipos.vhd" "a1b39a129e7d7f192e9e4641b79a5c2c41c3d080" "20260212012038.878":
-  package tipos at 2( 2) + 0 on 11;
-file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/top.vhd" "4f86fdcf49fe7bcb82d737fdb7ec13f95b19959f" "20260212012040.180":
-  entity top at 1( 0) + 0 on 32;
-  architecture structural of top at 17( 378) + 0 on 33;
-file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/top_archivo_c_tb.vhd" "695c69e6760fae75a7a2517b88dc9ab5d08c605a" "20260212012040.301":
-  entity top_archivo_c_tb at 1( 0) + 0 on 34;
-  architecture behavioral of top_archivo_c_tb at 9( 126) + 0 on 35;
-file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/top_sin_io.vhd" "603783c1a0443742c7fa60e9f676cc0abf3472ac" "20260212012038.672":
-  entity top_sin_io at 1( 0) + 0 on 4;
-  architecture structural of top_sin_io at 14( 235) + 0 on 4;
-file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/top_sin_io_tb.vhd" "99f78c1f8a93f332a8e27cea3cafc7b83b718b53" "20260212012038.672":
-  entity top_sin_io_tb at 1( 0) + 0 on 4;
-  architecture behavioral of top_sin_io_tb at 10( 132) + 0 on 4;
-file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/top_tb.vhd" "f7dbb74041acc3b3b6e8fd8de372b73655719179" "20260212012038.673":
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/top_tb.vhd" "f7dbb74041acc3b3b6e8fd8de372b73655719179" "20260223214422.558":
   entity top_tb at 1( 0) + 0 on 4;
   architecture behavioral of top_tb at 9( 116) + 0 on 4;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/top_suma_c_tb.vhd" "ccd83ba623e5c3266561635f6c6eb761bc193c1c" "20260223214424.236":
+  entity top_suma_c_tb at 1( 0) + 0 on 32;
+  architecture behavioral of top_suma_c_tb at 9( 123) + 0 on 33;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/top_sin_io_tb.vhd" "99f78c1f8a93f332a8e27cea3cafc7b83b718b53" "20260223214422.557":
+  entity top_sin_io_tb at 1( 0) + 0 on 4;
+  architecture behavioral of top_sin_io_tb at 10( 132) + 0 on 4;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/top_sin_io.vhd" "603783c1a0443742c7fa60e9f676cc0abf3472ac" "20260223214422.557":
+  entity top_sin_io at 1( 0) + 0 on 4;
+  architecture structural of top_sin_io at 14( 235) + 0 on 4;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/top.vhd" "cd985f1f634d5bbad6b2a9a9b9f9d7633c06fc3c" "20260223214424.060":
+  entity top at 1( 0) + 0 on 30;
+  architecture structural of top at 17( 378) + 0 on 31;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/tipos.vhd" "a1b39a129e7d7f192e9e4641b79a5c2c41c3d080" "20260223214422.794":
+  package tipos at 2( 2) + 0 on 11;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/rf_32x32.vhd" "adc644d0f0694b36f38f3f437be7d4c9f60531df" "20260223214423.112":
+  entity rf_32x32 at 1( 0) + 0 on 16;
+  architecture behavioral of rf_32x32 at 23( 595) + 0 on 17;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/reset_al_inicializar_fpga.vhd" "f1cd9fd7fbfbc942b666603174e97ec246985b8d" "20260223214422.879":
+  entity reset_al_inicializar_fpga at 1( 0) + 0 on 12;
+  architecture arch of reset_al_inicializar_fpga at 13( 341) + 0 on 13;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/ram_controller.vhd" "efc9de8cf64cec1ccc77aaa5670cdb5ffd59aee5" "20260223214423.702":
+  entity ram_controller at 1( 0) + 0 on 24;
+  architecture arch of ram_controller at 27( 929) + 0 on 25;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/ram_512x32.vhd" "ea0537d680e969910077614021f968a2b7cb7d43" "20260223214423.859":
+  entity ram_512x32 at 1( 0) + 0 on 26;
+  architecture behavioral of ram_512x32 at 21( 537) + 0 on 27;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/juego_tb.vhd" "b393e9bd50f5a0ef67f8525f61372fc509b8235f" "20260223214422.556":
+  entity juego_tb at 1( 0) + 0 on 4;
+  architecture behavioral of juego_tb at 9( 118) + 0 on 4;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/gpio_controller.vhd" "9bdab4f8f7d8e9d8a065686d5cf91b9bd8213835" "20260223214423.963":
+  entity gpio_controller at 1( 0) + 0 on 28;
+  architecture arch of gpio_controller at 23( 774) + 0 on 29;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/crossbar.vhd" "b35650d3bc50af8cea32d7c73c08e4fc198bc16e" "20260223214423.609":
+  entity crossbar at 1( 0) + 0 on 22;
+  architecture arch of crossbar at 24( 1296) + 0 on 23;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/cpu.vhd" "0d7a89de0c345a9e5c9171a510e180400a614cdc" "20260223214423.374":
+  entity cpu at 3( 30) + 0 on 20;
+  architecture arch of cpu at 20( 503) + 0 on 21;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/control_cpu.vhd" "16cb2005690149dd4f2d90bacdeaab0f622597ee" "20260223214422.982":
+  entity control_cpu at 2( 52) + 0 on 14;
+  architecture arch of control_cpu at 27( 840) + 0 on 15;
+file / "C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/alu.vhd" "51c53b96136caab79940bbf49376cba27dc2485a" "20260223214423.216":
+  entity alu at 1( 0) + 0 on 18;
+  architecture arch of alu at 20( 499) + 0 on 19;

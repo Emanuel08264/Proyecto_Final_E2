@@ -55,10 +55,9 @@ architecture structural of top is
     signal phys_ram_din  : std_logic_vector(31 downto 0);
     signal phys_ram_dout : std_logic_vector(31 downto 0);
 
-    -- 4. SEÑALES DEL GPIO CONTROLLER & DISPLAY 7 SEGMENTOS
+    -- 4. SEÑALES DEL GPIO CONTROLLER
     signal gpio_dsm      : std_logic_vector(31 downto 0);
     signal gpio_sact     : std_logic;
-    signal numero_segmentos : std_logic_vector(3 downto 0);
 
 begin
 
@@ -181,14 +180,7 @@ begin
         bus_sact    => gpio_sact,     -- Indica si el GPIO está activo
 
         gpio_in     => switches, -- Conectamos los switches a las entradas del GPIO
-        gpio_out    => numero_segmentos      -- Conectamos las salidas del GPIO a los LEDs
+        gpio_out    => leds      -- Conectamos las salidas del GPIO a los LEDs
     );
 
-    -- Instancia 6: Display 7 segmentos
-    u_siete_segmentos : entity siete_seg
-    port map (
-        D => numero_segmentos,
-        Y => leds(6 downto 0)
-    );
-    leds(7) <= '0';
 end structural;

@@ -50,6 +50,13 @@
 # pulsador S1 está conectado al pin 31. El LED D6 está conectado al pin 1.
 # El oscilador de 12 MHz está conectado al pin 94.
 
+# Reloj
+
+set_io clk 94
+
+# Reset
+
+set_io -pullup yes nreset_in 37
 
 # Tablero de interruptores de 8 bits
 set_io switches[7] 24

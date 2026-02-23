@@ -32,5 +32,7 @@
 ../../src/ieee2008/numeric_std-body.vhdl:3036:7:@500ns:(assertion warning): NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
 ../../src/ieee2008/numeric_std-body.vhdl:3036:7:@550ns:(assertion warning): NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
 ../../src/ieee2008/numeric_std-body.vhdl:3036:7:@550ns:(assertion warning): NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/top_archivo_c_tb.vhd:54:5:@200050ns:(report note): Test completado exitosamente.
-simulation finished @200050ns
+C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/top_suma_c_tb.vhd:51:5:@500050ns:(report note): Valor ingresado en los switches: 00001011
+C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/top_suma_c_tb.vhd:52:5:@500050ns:(report note): Valor mostrado en los LEDs: 01111001
+C:/Users/Emanuel/Documents/GitHub/Proyecto_Final_E2/src/top_suma_c_tb.vhd:57:9:@500050ns:(report note): Test completado exitosamente.
+simulation finished @500050ns
