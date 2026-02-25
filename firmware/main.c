@@ -4,7 +4,7 @@
 #define MASK_SCORE  0x20  // Switch 5 (0010 0000)
 #define MASK_NEXT   0x40  // Switch 6 (0100 0000)
 #define MASK_ENTER  0x80  // Switch 7 (1000 0000)
-#define MODO_SIMULACION 1
+#define MODO_SIMULACION 0
 
 int victorias = 0;
 unsigned int semilla = 0;
@@ -129,8 +129,7 @@ int main() {
                     } else {
                         // ¡ERROR!
                         parpadear(0x79, 3); // Muestra "E"
-                        // No cambia de estado, tienes que seguir intentando el mismo
-                        // O si prefieres que pierda el turno: estado = 0;
+                        // Sigue el mismo numero y espera otro intento (no cambia estado)
                     }
 
                     // Esperar a que suelte el ENTER
