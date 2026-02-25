@@ -1,0 +1,6 @@
+/build
+/out
+*.swp
+*.bin
+*.elf
+*.o
