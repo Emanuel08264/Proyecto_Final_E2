@@ -56,9 +56,6 @@ begin
     wait for 1000 * periodo;
 
     -- 3. INGRESAR RESPUESTA Y CONFIRMAR
-    -- El target es 10 (decimal) -> A (Hex) -> 1010 (Binario)
-    -- Switch ENTER es el bit 7 (0x80)
-    -- Queremos enviar: ENTER + DATOS = 0x80 OR 0x0A = 0x8A
     
     report "ACCION: Ingresando 10 (0xA) y confirmando (SW7)...";
     switches <= x"8A"; -- 1000 1010
@@ -77,8 +74,8 @@ evaluacion: process
 begin
     wait until rising_edge(clk);
     -- Esperamos hasta el momento donde debería ocurrir la victoria
-    -- (Suma de todos los tiempos de arriba aprox: 2000+200+1000+200 = ~3500)
-    wait for 8000 * periodo; 
+    -- (Suma de todos los tiempos de arriba aprox: 2000+200+1000+200+8000 = ~11500)
+    wait for 11500 * periodo; 
     
     -- Si ganamos, el código C hace parpadear todo (0xFF)
     -- Si perdimos, muestra una 'E' (0x79)

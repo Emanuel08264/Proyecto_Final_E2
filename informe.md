@@ -9,21 +9,27 @@
 ### 2025
 
 ---
+<div style="page-break-after: always;"></div>
 
 ## 1. RESUMEN
 
+Este informe documenta los resultados de una investigación teórica sobre Arquitectura de Computadoras, específicamente en la arquitectura RISC-V, el manejo de registros y el conjunto de instrucciones RV32I. Asimismo, se aborda el estudio de la microarquitectura, profundizando en la topología multiciclo. 
+
+Para llevar a la práctica estos conceptos, se presenta el diseño y la descripción en hardware (VHDL) de un microcontrolador completo. Este sistema está compuesto por una CPU capaz de ejecutar el conjunto básico de instrucciones RV32I, una memoria RAM de 512x32 y una interfaz periférica con 8 bits de entrada y 8 de salida. En la sección de resultados se exponen las simulaciones de validación, destacando la ejecución de un juego interactivo como prueba integradora final. Por último, se llevó a cabo la síntesis y carga exitosa del sistema en la placa física EDU-CIAA-FPGA.
+
 ---
+<div style="page-break-after: always;"></div>
 
 ## 2. INTRODUCCIÓN
 
 ### 2.1 Arquitectura de computadora
 
-El término "arquitectura de computadora" (o ISA - Instruction Set Architecture) se refiere a la visión abstracta del sistema desde la perspectiva del programador. Define la interfaz entre el hardware y el software, especificando los tipos de datos soportados, el conjunto de registros, los modos de direccionamiento y el conjunto de instrucciones disponibles, sin entrar en detalles de cómo estos se implementan físicamente (lo cual corresponde a la microarquitectura).
+El término "arquitectura de computadora" (o ISA - Instruction Set Architecture) se refiere a la visión abstracta del sistema desde la perspectiva del programador. Define la interfaz entre el hardware y el software, especificando los tipos de datos soportados, el conjunto de registros, los modos de direccionamiento y el conjunto de instrucciones disponibles, sin entrar en detalles de cómo estos se implementan físicamente (lo cual corresponde a la microarquitectura). (Harris & Harris, 2019).
 
 ### 2.2 Microarquitectura
 
-La microarquitectura de computadoras incluye todo el hardware involucrado en el funcionamiento de una computadora. Esta definida por le arreglo de registros, memorias, unidades aritmético-lógicas (ALUs), y otro bloques constructivos del microprocesador.
-La microarquitectura se divide en 2 partes que interactúan entre si: el datapath y la unidad de control. El datapath contiene las memorias, ALUs, registros y multiplexores. Como trabajamos con RV32I, el datapath es de 32 bits. La unidad de control recibe la instrucción actual y le indica al datapath como ejecutarla.
+La microarquitectura de computadoras incluye todo el hardware involucrado en el funcionamiento de una computadora. Esta definida por el arreglo de registros, memorias, unidades aritmético-lógicas (ALUs), y otro bloques constructivos del microprocesador.
+La microarquitectura se divide en 2 partes que interactúan entre si: el datapath y la unidad de control. El datapath contiene las memorias, ALUs, registros y multiplexores. Como trabajamos con RV32I, el datapath es de 32 bits. La unidad de control recibe la instrucción actual y le indica al datapath como ejecutarla (Harris & Harris, 2019).
 Para el diseño de una microarquitectura, primero deben definirse los elementos de estado. Nos centraremos en 4 elementos de estado: el program counter (PC), el register file, memoria de instrucción y memoria de información.
 
 <u>Program counter:</u> es un puntero a la dirección de instrucción actual. Su entrada (PCNext) indica la dirección de la siguiente instrucción.
@@ -40,9 +46,11 @@ En la **Imagen 2.2** se observa el símbolo de estos elementos.
 
 **Imagen 2.2** *Elementos de estado*
 
+_Nota. Adaptado de Digital Design and Computer Architecture, por D. M. Harris y S. L. Harris, 2019_
+
 #### 2.2.1 Tipos de Microarquitectura RISC-V
 
-Existen diversas formas de conectar los elementos de estado y la lógica para implementar el conjunto de instrucciones RISC-V. Las tres variantes principales son:
+Según Harris & Harris, (2019), existen diversas formas de conectar los elementos de estado y la lógica para implementar el conjunto de instrucciones RISC-V. Las tres variantes principales son:
 
 **Procesador Uniciclo (Single-Cycle):** Ejecuta la instrucción completa en un único ciclo de reloj. Aunque su lógica de control es simple y no requiere registros intermedios, tiene dos grandes desventajas: el periodo del reloj está limitado por la instrucción más lenta (como lw), y requiere memorias separadas para instrucciones y datos, lo cual es costoso y poco realista para sistemas simples.
 
@@ -59,16 +67,17 @@ Existen diversas formas de conectar los elementos de estado y la lógica para im
 Para implementar este diseño, el datapath debe incorporar elementos de estado no arquitectónicos adicionales para almacenar los resultados intermedios entre cada paso. Asimismo, dado que se generan señales de control diferentes en cada paso de una misma instrucción, el controlador debe implementarse mediante una Máquina de Estados Finitos (FSM) en lugar de lógica combinacional pura.
 
 ---
+<div style="page-break-after: always;"></div>
 
 ## 3. DESARROLLO
 
 ### 3.1 Arquitectura RISC-V 
 
-La arquitectura RISC-V se introduce como la primera arquitectura de conjunto de instrucciones (ISA) de código abierto que cuenta con un amplio soporte comercial. Fue definida inicialmente en el año 2010 en la Universidad de California, Berkeley, por Krste Asanović, Andrew Waterman y David Patterson, entre otros.
+Según Harris & Harris (2019), la arquitectura RISC-V se introduce como la primera arquitectura de conjunto de instrucciones (ISA) de código abierto que cuenta con un amplio soporte comercial. Fue definida inicialmente en el año 2010 en la Universidad de California, Berkeley, por Krste Asanović, Andrew Waterman y David Patterson, entre otros.
 
 Una característica inusual de RISC-V es que su naturaleza de código abierto la hace de uso gratuito, manteniendo capacidades comparables a arquitecturas comerciales establecidas como ARM y x86. El diseño de esta arquitectura se basó en cuatro principios fundamentales: (1) la regularidad apoya la simplicidad; (2) hacer rápido el caso común; (3) lo más pequeño es más rápido; y (4) el buen diseño exige buenos compromisos.
 
-Con respecto al RV32I, se describe como el conjunto de instrucciones de enteros de 32 bits (versión 2.2). Este conjunto es fundamental, ya que forma el núcleo (core) del conjunto de instrucciones de RISC-V.
+Con respecto al RV32I, se describe como el conjunto de instrucciones de enteros de 32 bits (versión 2.2). Este conjunto es fundamental, ya que forma el núcleo (core) del conjunto de instrucciones de RISC-V. 
 
 ### 3.2 Conjunto de registros de la arquitectura RISC-V
 
@@ -77,6 +86,8 @@ La arquitectura RISC-V cuenta con 32 registros (ancho de palabra de 32 bits) lla
 ![register_set](imagenes/register_set.png "Register set")
 
 **Imagen 3.2** *Conjunto de registros RISC-V*
+
+_Nota. Adaptado de Digital Design and Computer Architecture, por D. M. Harris y S. L. Harris, 2019_
 
 Aunque la mayoría de registros son de propósito general, la arquitectura impone funciones específicas en hardware y convenciones de software (ABI) para algunos de ellos:
 
@@ -96,6 +107,8 @@ Las instrucciones tipo R (register-type) usan 3 registros como operando, dos com
 
 **Imagen 3.3.1** *Formato instrucciones R*
 
+_Nota. Adaptado de Digital Design and Computer Architecture, por D. M. Harris y S. L. Harris, 2019_
+
 Los campos **funct7 (7 bits), funct3 (3 bits) y opcode (7 bits)** son llamados bits de control y especifican la operación exacta ejecutar. Por ejemplo, _add y sub_ comparten el mismo _opcode y funct3_, diferenciándose únicamente en el _funct7_.
 
 Las instrucciones R incluyen operaciones aritméticas (add, sub), lógicas (and, or y xor) y desplazamientos (sll, srl y sra), sin utilizar valores inmediatos, solo datos contenidos en registros.
@@ -108,7 +121,9 @@ Las instrucciones tipo I (immediate-type) usan 2 registros como operando (uno co
 
 **Imagen 3.3.2** *Formato instrucciones I*
 
-Las instrucciones I incluyen operaciones aritméticas (addi), lógicas (andi, ori y xori) y desplazamientos (slli, srli y srai), utilizando valores inmediatos. Para la mayoría de operaciones el campo inmediato representa un numero de 12 bits en complemento a 2, excepto para los desplazamientos. En esos casos, imm 4:0 es el desplazamiento de 5 bits sin signo a realizar, y los 7 bits superiores son 0, excepto en srai, donde imm10 vale 1.
+_Nota. Adaptado de Digital Design and Computer Architecture, por D. M. Harris y S. L. Harris, 2019_
+
+Las instrucciones I incluyen operaciones aritméticas (addi), lógicas (andi, ori y xori) y desplazamientos (slli, srli y srai), utilizando valores inmediatos. Para la mayoría de operaciones el campo inmediato representa un numero de 12 bits en complemento a 2, excepto para los desplazamientos. En esos casos, imm 4:0 es el desplazamiento de 5 bits sin signo a realizar, y los 7 bits superiores son 0, excepto en srai, donde imm10 vale 1 (Harris & Harris, 2019)..
 
 #### 3.3.3 Instrucciones tipo S
 
@@ -121,6 +136,8 @@ En lenguaje máquina, las instrucciones S tienen el siguiente formato (**Imagen 
 ![s-type](imagenes/s_type.png "Formato instrucciones S")
 
 **Imagen 3.3.3** *Formato instrucciones S*
+
+_Nota. Adaptado de Digital Design and Computer Architecture, por D. M. Harris y S. L. Harris, 2019_
 
 Para mantener la posición de los campos rs1 y rs2 alineada con los otros formatos, el inmediato de 12 bits se divide en dos partes dentro de la instrucción.
 
@@ -136,9 +153,11 @@ En lenguaje máquina, las instrucciones B tienen el siguiente formato (**Imagen 
 
 **Imagen 3.3.4** *Formato instrucciones B*
 
+_Nota. Adaptado de Digital Design and Computer Architecture, por D. M. Harris y S. L. Harris, 2019_
+
 La principal diferencia radica en la codificación del inmediato. En las instrucciones de salto, el inmediato representa un desplazamiento de 13 bits con signo. Sin embargo, como las instrucciones en RISC-V siempre están alineadas a direcciones pares, el bit menos significativo (bit 0) es siempre 0 y no se almacena en la instrucción. Esto permite codificar un rango efectivo de 13 bits usando solo 12 bits de espacio.
 
-Además, los bits del inmediato se encuentran "desordenados" dentro de la instrucción (bit swizzling). Este re ordenamiento aparente se realiza para que el bit de signo siempre ocupe la posición 31 (igual que en los tipos R, I y S) y para que los otros bits coincidan lo máximo posible con el formato S, simplificando así el hardware de decodificación.
+Además, los bits del inmediato se encuentran "desordenados" dentro de la instrucción (bit swizzling). Este re ordenamiento aparente se realiza para que el bit de signo siempre ocupe la posición 31 (igual que en los tipos R, I y S) y para que los otros bits coincidan lo máximo posible con el formato S, simplificando así el hardware de decodificación. (Harris & Harris, 2019).
 
 #### 3.3.5 Instrucciones tipo U
 
@@ -150,8 +169,10 @@ En lenguaje máquina, las instrucciones U tienen el siguiente formato (**Imagen 
 
 **Imagen 3.3.5** *Formato instrucciones U*
 
+_Nota. Adaptado de Digital Design and Computer Architecture, por D. M. Harris y S. L. Harris, 2019_
+
 La instrucción lui (*load upper *immediate) es un ejemplo de este formato. El inmediato de 32 bits resultante consiste en los 20 bits superiores codificados en la instrucción y ceros en los bits inferiores. Por ejemplo, tras la ejecución, el registro de destino podría contener un valor como 0x8CDEF000 donde la parte alta proviene del inmediato.
-Además de lui, existe la instrucción auipc (Add Upper Immediate to PC). Esta suma el inmediato de 20 bits (desplazado 12 bits a la izquierda) al PC actual. Sirve para generar direcciones de memoria relativas a la posición actual.
+Además de lui, existe la instrucción auipc (Add Upper Immediate to PC). Esta suma el inmediato de 20 bits (desplazado 12 bits a la izquierda) al PC actual. Sirve para generar direcciones de memoria relativas a la posición actual. (Harris & Harris, 2019).
 
 #### 3.3.6 Instrucciones tipo J
 
@@ -163,13 +184,15 @@ En lenguaje máquina, las instrucciones J tienen el siguiente formato (**Imagen 
 
 **Imagen 3.3.6** *Formato instrucciones J*
 
+_Nota. Adaptado de Digital Design and Computer Architecture, por D. M. Harris y S. L. Harris, 2019_
+
 Al igual que en las instrucciones tipo B, el bit menos significativo del inmediato es siempre 0 y no se codifica en la instrucción. Los bits restantes se encuentran mezclados (swizzled) dentro del campo inmediato de 20 bits.
 
-La instrucción jal (*jump and link*) realiza un salto a una dirección relativa al PC actual (la dirección de la propia instrucción jal). Si la instrucción en ensamblador no especifica un registro de destino rd, este campo asume por defecto el valor de ra (x1). Asimismo, el salto ordinario (j) se codifica como una instrucción jal con rd = 0.
+La instrucción jal (*jump and link*) realiza un salto a una dirección relativa al PC actual (la dirección de la propia instrucción jal). Si la instrucción en ensamblador no especifica un registro de destino rd, este campo asume por defecto el valor de ra (x1). Asimismo, el salto ordinario (j) se codifica como una instrucción jal con rd = 0. (Harris & Harris, 2019).
 
 #### 3.3.7 Codificación de valores inmediatos
 
-RISC-V utiliza valores inmediatos de 32 bits con signo (complemento a 2). Sin embargo, debido a las restricciones de tamaño de la instrucción, solo se codifican entre 12 y 21 bits del inmediato dentro de la instrucción misma.
+RISC-V utiliza valores inmediatos de 32 bits con signo (complemento a 2). Sin embargo, debido a las restricciones de tamaño de la instrucción, solo se codifican entre 12 y 21 bits del inmediato dentro de la instrucción misma. (Harris & Harris, 2019).
 
 Como se observa en la distribución de formatos (**Imagen 3.3.7**):
 
@@ -182,6 +205,8 @@ Tipo U: Codifica los 20 bits superiores de un inmediato de 32 bits. Los 12 bits 
 ![imm_code](imagenes/imm_encode.png "RISC-V Inmediatos")
 
 **Imagen 3.3.7** *RISC-V Inmediatos*
+
+_Nota. Adaptado de Digital Design and Computer Architecture, por D. M. Harris y S. L. Harris, 2019_
 
 El diseño de RV32I prioriza la regularidad para simplificar el hardware. A través de los diferentes formatos, se intenta mantener los bits del inmediato en las mismas posiciones de la instrucción tanto como sea posible. Esta consistencia minimiza la cantidad de cables y multiplexores necesarios para extraer y extender el signo del inmediato, aunque esto conlleve una codificación de instrucción más compleja (conocida como bit swizzling). Por ejemplo, el bit 31 de la instrucción siempre contiene el bit de signo del inmediato. 
 
@@ -214,6 +239,7 @@ La condición de salto es el resultado de esa resta. El campo funct3 codifica qu
     001 (bne): Salta si el resultado no es Cero. 
 
 ---
+<div style="page-break-after: always;"></div>
 
 ## 4. RESULTADOS
 
@@ -344,10 +370,17 @@ Como se observa en la Imagen 4.3.3 (correspondiente al caso detallado previament
 Finalmente, el sistema fue implementado físicamente en la placa FPGA. Se comprobó empíricamente que, al accionar los switches, el display de 7 segmentos reaccionaba en tiempo real mostrando el resultado de la suma codificada.
 
 ---
+<div style="page-break-after: always;"></div>
 
 ## 5. CONCLUSIONES
 
+El desarrollo del presente trabajo ha permitido adquirir los conceptos fundamentales de arquitectura y microarquitectura de computadoras, con énfasis en el estándar abierto RISC-V y su conjunto básico de instrucciones RV32I. La implementación práctica afianzó el entendimiento del funcionamiento interno de una topología multiciclo. Asimismo, se pudieron poner en práctica las habilidades de diseño digital mediante la descripción de hardware en VHDL, abarcando desde el modelado de Máquinas de Estados Finitos (FSM) hasta la validación del sistema mediante el análisis de formas de onda y la creación de bancos de pruebas automáticos.
+
+Finalmente, cabe destacar la incorporación de herramientas basadas en Inteligencia Artificial (IA) como asistencia técnica durante el ciclo de desarrollo, empleadas metódicamente para la depuración de errores. El dominio y la integración de estas tecnologías emergentes representa una competencia cada vez más indispensable, demostrando que su uso analítico e inteligente no solo agiliza los tiempos de desarrollo, sino que minimiza fallos y potencia la calidad del diseño final.
+
 ---
+<div style="page-break-after: always;"></div>
 
 ## 6. REFERENCIAS
 
+- Harris, D. M., & Harris, S. L. (2019). _Digital design and computer architecture_, RISC-V edition. Morgan Kaufmann.
