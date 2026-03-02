@@ -5,9 +5,12 @@ use work.tipos.all;
 use work.all;
 
 entity top_sin_io is
+    generic (
+        init_file : string := "../src/ram_init_sin_io.txt" -- Archivo de inicialización para la RAM
+    );
     port (
         clk    : in std_logic;
-        nreset : in std_logic
+        nreset_in : in std_logic
     );
 end top_sin_io;
 
@@ -15,6 +18,9 @@ architecture structural of top_sin_io is
 
     -- Constante: Cantidad de esclavos conectados (Solo 1: RAM)
     constant N_SLAVES : positive := 1;
+
+    -- 0. SEÑALES DE RESET
+    signal system_nreset : std_logic;
 
     -- 1. SEÑALES DEL BUS (LADO MAESTRO - CPU)
     signal cpu_addr    : std_logic_vector(31 downto 0);
@@ -32,9 +38,10 @@ architecture structural of top_sin_io is
 
     -- Entradas al Crossbar desde los esclavos
     -- Posición 0 = RAM Controller
+    -- Posición 1 = GPIO Controller
     signal slaves_active    : std_logic_vector(N_SLAVES-1 downto 0);
     signal slaves_data_read : word_array(N_SLAVES-1 downto 0);
-
+    
     -- 3. SEÑALES DEL RAM CONTROLLER & MEMORIA FÍSICA
     
     -- Interfaz Controller -> Crossbar
@@ -50,10 +57,20 @@ architecture structural of top_sin_io is
 
 begin
 
+    -- INSTANCIA 0: MÓDULO DE RESET
+    u_reset : entity reset_al_inicializar_fpga
+    port map (
+        clk => clk,
+        nreset_in => nreset_in,
+        nreset_out => system_nreset
+    );
+
+    -- INSTANCIA 1: CPU
+
     u_cpu : entity cpu
     port map (
         clk         => clk,
-        nreset      => nreset,
+        nreset      => system_nreset,
         -- Salidas hacia el Bus
         bus_addr    => cpu_addr,
         bus_dms     => cpu_dms,
@@ -122,11 +139,11 @@ begin
         ram_dout    => phys_ram_dout -- Entrada desde la RAM física
     );
 
-    -- INSTANCIA 4: MEMORIA RAM FÍSICA (Para Simulación)
+    -- INSTANCIA 4: MEMORIA RAM 
 
     u_phys_ram : entity ram_512x32
     generic map (
-        init_file => "../src/ram_init.txt"
+        init_file => init_file 
     )
     port map (
         clk      => clk,
@@ -136,5 +153,5 @@ begin
         dout     => phys_ram_dout,  -- Dato leído
         mask     => phys_ram_mask  -- Máscara de bytes para escrituras parciales
     );
-
+    
 end structural;

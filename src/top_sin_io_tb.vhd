@@ -16,9 +16,12 @@ architecture behavioral of top_sin_io_tb is
 begin
 
 dut : entity top_sin_io
+    generic map (
+        init_file => "../src/ram_init_sin_io.txt"
+    )
     port map (
         clk    => clk,
-        nreset => nreset
+        nreset_in => nreset
     );
 
 gen_clk : process

@@ -13,9 +13,7 @@
 
 ## 1. RESUMEN
 
-Este informe documenta los resultados de una investigación teórica sobre Arquitectura de Computadoras, específicamente en la arquitectura RISC-V, el manejo de registros y el conjunto de instrucciones RV32I. Asimismo, se aborda el estudio de la microarquitectura, profundizando en la topología multiciclo. 
-
-Para llevar a la práctica estos conceptos, se presenta el diseño y la descripción en hardware (VHDL) de un microcontrolador completo. Este sistema está compuesto por una CPU capaz de ejecutar el conjunto básico de instrucciones RV32I, una memoria RAM de 512x32 y una interfaz periférica con 8 bits de entrada y 8 de salida. En la sección de resultados se exponen las simulaciones de validación, destacando la ejecución de un juego interactivo como prueba integradora final. Por último, se llevó a cabo la síntesis y carga exitosa del sistema en la placa física EDU-CIAA-FPGA.
+En este informe se presenta el diseño y la descripción de hardware en VHDL de un microcontrolador multiciclo basado en la arquitectura RISC-V. El sistema está compuesto por una CPU capaz de ejecutar el conjunto básico de instrucciones RV32I, una memoria RAM y un controlador de periféricos (GPIO). Además de exponer las simulaciones de validación del datapath y la unidad de control, se destaca la ejecución de un juego interactivo en lenguaje C como prueba integradora. Finalmente, se detalla la síntesis y carga exitosa del sistema completo en la placa física EDU-CIAA-FPGA, comprobando su funcionamiento en hardware real.
 
 ---
 <div style="page-break-after: always;"></div>
@@ -28,7 +26,7 @@ El término "arquitectura de computadora" (o ISA - Instruction Set Architecture)
 
 ### 2.2 Microarquitectura
 
-La microarquitectura de computadoras incluye todo el hardware involucrado en el funcionamiento de una computadora. Esta definida por el arreglo de registros, memorias, unidades aritmético-lógicas (ALUs), y otro bloques constructivos del microprocesador.
+La microarquitectura de computadoras incluye todo el hardware involucrado en el funcionamiento de una computadora. Está definida por el arreglo de registros, memorias, unidades aritmético-lógicas (ALUs), y otro bloques constructivos del microprocesador.
 La microarquitectura se divide en 2 partes que interactúan entre si: el datapath y la unidad de control. El datapath contiene las memorias, ALUs, registros y multiplexores. Como trabajamos con RV32I, el datapath es de 32 bits. La unidad de control recibe la instrucción actual y le indica al datapath como ejecutarla (Harris & Harris, 2019).
 Para el diseño de una microarquitectura, primero deben definirse los elementos de estado. Nos centraremos en 4 elementos de estado: el program counter (PC), el register file, memoria de instrucción y memoria de información.
 
@@ -36,7 +34,7 @@ Para el diseño de una microarquitectura, primero deben definirse los elementos 
 
 <u>Memoria de instrucción:</u> es una memoria simple de solo lectura. Toma la dirección de 32 bits proporcionada por PC y lee la instrucción que contiene (de 32 bits también).
 
-<u>Conjunto de registros:</u> es una memoria multi puerto de 32x32 bits. Tiene dos puertos de lectura A1 Y A2, uno de escritura A3 de 5 bits (pues hay solo 32 registros). Ademas cuenta con una entrada de datos de 32 bits WD, y cuenta con habilitación de escritura WE sincrónica. La salida de lectura es de 32 bits.
+<u>Conjunto de registros:</u> es una memoria multi puerto de 32x32 bits. Tiene dos puertos de lectura A1 Y A2, uno de escritura A3 de 5 bits (pues hay solo 32 registros). Además cuenta con una entrada de datos de 32 bits WD, y cuenta con habilitación de escritura WE sincrónica. La salida de lectura es de 32 bits.
 
 <u>Memoria de datos:</u> memoria de lectura escritura con habilitación de escritura sincrónica. Las direcciones A, y las palabras a escribir WD o leer RD son de 32 bits.
 
@@ -54,7 +52,7 @@ Según Harris & Harris, (2019), existen diversas formas de conectar los elemento
 
 **Procesador Uniciclo (Single-Cycle):** Ejecuta la instrucción completa en un único ciclo de reloj. Aunque su lógica de control es simple y no requiere registros intermedios, tiene dos grandes desventajas: el periodo del reloj está limitado por la instrucción más lenta (como lw), y requiere memorias separadas para instrucciones y datos, lo cual es costoso y poco realista para sistemas simples.
 
-**Procesador Segmentado (Pipelined):** Divide la ejecución en varias etapas que funcionan en paralelo (como una línea de montaje), permitiendo ejecutar múltiples instrucciones simultáneamente. Esto mejora drásticamente el rendimiento (throughput), pero requiere hardware adicional para gestionar dependencias de datos y registros de segmentación. Es el estándar en procesadores comerciales modernos.
+**Procesador Segmentado (Pipelined):** Divide la ejecución en varias etapas que funcionan en paralelo, permitiendo ejecutar múltiples instrucciones simultáneamente. Esto mejora drásticamente el rendimiento, pero requiere hardware adicional para gestionar dependencias de datos y registros de segmentación. Es el estándar en procesadores comerciales modernos.
 
 **Procesador Multiciclo (Multicycle):** Esta arquitectura ejecuta una instrucción a lo largo de una serie de ciclos más cortos. Sus ventajas principales, y la razón por la que se implementará en este proyecto, son:
 
@@ -64,7 +62,7 @@ Según Harris & Harris, (2019), existen diversas formas de conectar los elemento
 
 - Eficiencia: Las instrucciones simples toman menos ciclos que las complejas.
 
-Para implementar este diseño, el datapath debe incorporar elementos de estado no arquitectónicos adicionales para almacenar los resultados intermedios entre cada paso. Asimismo, dado que se generan señales de control diferentes en cada paso de una misma instrucción, el controlador debe implementarse mediante una Máquina de Estados Finitos (FSM) en lugar de lógica combinacional pura.
+Para implementar este diseño, el datapath debe incorporar elementos de estado no arquitectónicos adicionales para almacenar los resultados intermedios entre cada paso. Asimismo, dado que se generan señales de control diferentes en cada paso de una misma instrucción, el controlador debe implementarse mediante una Máquina de Estados Finitos (FSM).
 
 ---
 <div style="page-break-after: always;"></div>
@@ -101,7 +99,7 @@ x2 (sp): Actúa como Stack Pointer (puntero de pila).
 
 #### 3.3.1 Instrucciones tipo R
 
-Las instrucciones tipo R (register-type) usan 3 registros como operando, dos como fuente (rs1 y rs2) y uno de destino rd. Cada campo de registro ocupa 5 bits, permitiendo direccionar cualquiera de los 32 registros del banco (x0-x31). En lenguaje maquina, las instrucciones R tienen el siguiente formato (**Imagen 3.3.1**).
+Las instrucciones tipo R (register-type) usan 3 registros como operando, dos como fuente (rs1 y rs2) y uno de destino rd. Cada campo de registro ocupa 5 bits, permitiendo direccionar cualquiera de los 32 registros del banco (x0-x31). En lenguaje máquina, las instrucciones R tienen el siguiente formato (**Imagen 3.3.1**).
 
 ![r-type](imagenes/r_type.png "Formato instrucciones R")
 
@@ -109,7 +107,7 @@ Las instrucciones tipo R (register-type) usan 3 registros como operando, dos com
 
 _Nota. Adaptado de Digital Design and Computer Architecture, por D. M. Harris y S. L. Harris, 2019_
 
-Los campos **funct7 (7 bits), funct3 (3 bits) y opcode (7 bits)** son llamados bits de control y especifican la operación exacta ejecutar. Por ejemplo, _add y sub_ comparten el mismo _opcode y funct3_, diferenciándose únicamente en el _funct7_.
+Los campos **funct7 (7 bits), funct3 (3 bits) y opcode (7 bits)** son llamados bits de control y especifican la operación exacta a ejecutar. Por ejemplo, _add y sub_ comparten el mismo _opcode y funct3_, diferenciándose únicamente en el _funct7_.
 
 Las instrucciones R incluyen operaciones aritméticas (add, sub), lógicas (and, or y xor) y desplazamientos (sll, srl y sra), sin utilizar valores inmediatos, solo datos contenidos en registros.
 
@@ -123,7 +121,7 @@ Las instrucciones tipo I (immediate-type) usan 2 registros como operando (uno co
 
 _Nota. Adaptado de Digital Design and Computer Architecture, por D. M. Harris y S. L. Harris, 2019_
 
-Las instrucciones I incluyen operaciones aritméticas (addi), lógicas (andi, ori y xori) y desplazamientos (slli, srli y srai), utilizando valores inmediatos. Para la mayoría de operaciones el campo inmediato representa un numero de 12 bits en complemento a 2, excepto para los desplazamientos. En esos casos, imm 4:0 es el desplazamiento de 5 bits sin signo a realizar, y los 7 bits superiores son 0, excepto en srai, donde imm10 vale 1 (Harris & Harris, 2019)..
+Las instrucciones I incluyen operaciones aritméticas (addi), lógicas (andi, ori y xori) y desplazamientos (slli, srli y srai), utilizando valores inmediatos. Para la mayoría de operaciones el campo inmediato representa un número de 12 bits en complemento a 2, excepto para los desplazamientos. En esos casos, imm 4:0 es el desplazamiento de 5 bits sin signo a realizar, y los 7 bits superiores son 0, excepto en srai, donde imm10 vale 1 (Harris & Harris, 2019)..
 
 #### 3.3.3 Instrucciones tipo S
 
@@ -247,7 +245,7 @@ Se presenta el diseño y desarrollo de la descripción de hardware (utilizando e
 
 ### 4.1 Diseño Macro
 
-Para interconectar los elementos principales del sistema (procesador, memoria RAM e interfaz periférica), se implementó un crossbar. Este componente actúa como un bus compartido que, basándose en la dirección de memoria solicitada por el procesador, rutea las señales para permitir la lectura o escritura del esclavo correspondiente, garantizando que el acceso sea mutuamente excluyente. Para el mapa de memoria, se asignó la dirección base x"00000000" a la memoria RAM y la dirección x"40000000" a la interfaz periférica.
+Para interconectar los elementos principales del sistema (procesador, memoria RAM e interfaz periférica), se implementó un crossbar. Este componente actúa como un bus compartido que, basándose en la dirección de memoria solicitada por el procesador, rutea las señales para permitir la lectura o escritura del esclavo correspondiente, garantizando que el acceso sea mutuamente excluyente. Para el mapa de memoria, se asignó la dirección base x"00000000" a la memoria RAM y la dirección x"40000000" a la interfaz periférica. En la **Imagen 4.1** se observa la manera en que se interconectan los módulos mencionados.
 
 
 ![macro](imagenes/macro.png "Macro Design")
@@ -256,9 +254,15 @@ Para interconectar los elementos principales del sistema (procesador, memoria RA
 
 ### 4.2 Datapath
 
+En la **Imagen 4.2** se observa el camino de datos con un nivel menor de abstracción. Este pertenece principalmente al módulo CPU, pero también se pueden observar algunas de las señales que se mandan al crossbar, para redirigirse al esclavo correspondiente.
+
+![Datapath](imagenes/datapath.png "Datapath")
+
+**Imagen 4.2** *Datapath*
+
 #### 4.2.1 CPU
 
-La descripción de hardware de la unidad central de procesamiento engloba la mayor parte del datapath y una Máquina de Estados Finitos (FSM) que actúa como unidad de control. Esta FSM es responsable de leer las instrucciones de la memoria y secuenciar las señales de control del datapath para su correcta ejecución. En la **Figura X** se muestra el diagrama de estados de la FSM . Para este diseño se optó por una topología de máquina de Mealy, dado que en ciertas transiciones, el cambio de estado y las salidas dependen no solo del estado actual, sino también del valor de las entradas (como el opcode de la instrucción en curso).
+La descripción de hardware de la unidad central de procesamiento engloba la mayor parte del datapath y una Máquina de Estados Finitos (FSM) que actúa como unidad de control. Esta FSM es responsable de leer las instrucciones de la memoria y secuenciar las señales de control del datapath para su correcta ejecución. En la **Figura 4.2.1** se muestra el diagrama de estados de la FSM . Para este diseño se optó por una topología de máquina de Mealy, dado que en ciertas transiciones, el cambio de estado y las salidas dependen no solo del estado actual, sino también del valor de las entradas (como el opcode de la instrucción en curso).
 
 ![diagrama_estados](imagenes/diagrama_estados.png "Diagrama de estados")
 
@@ -292,9 +296,9 @@ Este módulo enlaza la CPU con la interfaz periférica externa, que en la implem
 
 ### 4.3 Simulaciones
 
-Si bien se simuló cada componente individualmente durante la etapa de desarrollo para verificar su comportamiento aislado, el presente análisis se centra en la integración del sistema a nivel top.
+Si bien se simularon la mayoría de componentes individualmente durante la etapa de desarrollo para verificar su comportamiento aislado, el presente análisis se centra en la integración del sistema a nivel top.
 
-Para validar la funcionalidad global, la estrategia de simulación se dividió en dos etapas: pruebas con y sin el controlador GPIO. En la primera etapa (sistema sin periféricos), se precargó el archivo de inicialización de la RAM con código máquina en formato hexadecimal. Posteriormente, se ejecutó la simulación durante un periodo de tiempo determinado, permitiendo el análisis del comportamiento del datapath y la FSM mediante la inspección de las formas de onda generadas.
+Para validar la funcionalidad global, la estrategia de simulación se dividió en dos etapas: pruebas con y sin el controlador GPIO. La primera etapa busca comprobar el correcto funcionamiento del procesador, analizando si es capaz de ejecutar las instrucciones que deseamos, y la correcta comunicación entre el procesador y memoria RAM a través del crossbar. La segunda etapa verifica si el controlador periférico se integra correctamente al conjunto anterior. Además, como prueba integradora final, se creo un juego interactivo en C.
 
 #### 4.3.1 Validación inicial del Datapath y Memoria (Top sin I/O)
 
@@ -324,7 +328,7 @@ jal  x0, 0          # 0x20: 0000006f | Salto incondicional a sí mismo (Bucle in
 
 Se diseñó este código específicamente porque exige la ejecución de las principales familias de instrucciones RV32I: operaciones aritméticas (add, addi), saltos condicionales para el bucle (bne), operaciones de escritura/lectura en memoria (sw, lw) y saltos incondicionales (jal). 
 
-Se realizo un test bench que solo deja correr el programa el suficiente tiempo para que termine, para luego analizar las formas de onda obtenidas. Para facilitar la lectura, se coloco el formato en decimal con signo. En la **Imagen 4.3.1** vemos que el resultado 15, se almacenó correctamente en la dirección 0 de la RAM, reemplazando la instrucción que contenía previamente, y luego lo escribe en rs4..  Adicionalmente, analizamos la transición de estados para la instrucción: lw   x4, 0(x0). En la **Imagen 4.3.2** vemos que dicho pasaje coincide perfectamente con el previsto  por el diagrama de estados diseñado.  Por lo tanto, se valida de forma integral que la unidad de control, el datapath y el controlador de memoria operan correctamente en conjunto
+Se realizó un test bench que solo deja correr el programa el suficiente tiempo para que termine, para luego analizar las formas de onda obtenidas. Para facilitar la lectura, se colocó el formato en decimal con signo. En la **Imagen 4.3.1** se observa que el resultado 15, se almacenó correctamente en la dirección 0 de la RAM, reemplazando la instrucción que contenía previamente, y luego lo escribe en rs4.  Adicionalmente, se analizó la transición de estados para la instrucción: lw   x4, 0(x0). En la **Imagen 4.3.2** se comprueba que dicho pasaje coincide perfectamente con el previsto  por el diagrama de estados diseñado.  Por lo tanto, se valida de forma integral que la unidad de control, el datapath y el controlador de memoria operan correctamente en conjunto
 
 
 ![Test sin io](imagenes/test_sin_io_1.png "Test sin io")
@@ -368,6 +372,39 @@ Como se observa en la Imagen 4.3.3 (correspondiente al caso detallado previament
 **Imagen 4.3.3** *Resultados del TestBench automático*
 
 Finalmente, el sistema fue implementado físicamente en la placa FPGA. Se comprobó empíricamente que, al accionar los switches, el display de 7 segmentos reaccionaba en tiempo real mostrando el resultado de la suma codificada.
+
+#### 4.3.3 Prueba integradora final. Juego interactivo: "Aprender binario"
+
+Para poner a prueba el microcontrolador desarrollado de manera integral, se creó un juego interactivo en lenguaje C. La dinámica del mismo consiste en lo siguiente:
+
+- Estado de espera: El display muestra un guion (LED intermedio).
+
+- Generación: Al accionar el switch 6, el procesador genera y muestra un número hexadecimal aleatorio (del 0 al F).
+
+- Ingreso de datos: Utilizando los primeros 4 switches (0, 1, 2 y 3), el usuario debe ingresar la traducción exacta de dicho dígito a formato binario.
+
+- Confirmación: Se acciona el switch 7 para indicar que se ha ingresado el intento.
+
+- Acierto: Si la respuesta es correcta, se encienden todos los LEDs del display (parpadeando 3 veces). El panel vuelve a mostrar el guion y espera a que se solicite un nuevo número.
+
+- Error: Si la respuesta es incorrecta, se muestra la letra 'E' de error (parpadeando 3 veces). Luego, el panel vuelve a mostrar el número objetivo hasta que sea adivinado correctamente.
+
+- Puntaje: Adicionalmente, al accionar el switch 5, el display revela el conteo de victorias obtenidas hasta el momento.
+
+Para el desarrollo de la lógica de software de esta aplicación, específicamente en la implementación del algoritmo generador de números pseudoaleatorios, se utilizó asistencia de Inteligencia Artificial (Gemini).
+
+Previo a cargar en la FPGA, se realizó una simulación del código compilado. Para la misma, el número aleatorio mostrado siempre es A (10). En la **Imagen 4.3.4** se puede ver el guion en leds al inicio, al accionar sw6 muestra el numero aleatorio (A), con los switches 0123 escribe A, acciona sw7 y el display realiza la animación de festejo. Luego se simuló el error y el conteo de victorias. En la  **Imagen 4.3.5** se observa que realiza la misma secuencia ingresando B, y el display realiza la animación de error. Unos ciclos después acciona sw5 y el display muestra 1, la victoria obtenida anteriormente.
+
+Finalmente, el código compilado fue integrado a la memoria del diseño y sintetizado en la placa EDU-CIAA-FPGA. Se verificó exitosamente que el juego se ejecuta a la perfección, leyendo las entradas físicas del usuario y reaccionando en el display en tiempo real, validando de forma empírica y absoluta el diseño del microcontrolador.
+
+![Juego acierto](imagenes/juego_acierto.png "Juego acierto")
+
+**Imagen 4.3.4** *Formas de onda: numero correcto*
+
+![Juego error](imagenes/juego_error.png "Juego error")
+
+**Imagen 4.3.5** *Formas de onda: numero incorrecto*
+
 
 ---
 <div style="page-break-after: always;"></div>

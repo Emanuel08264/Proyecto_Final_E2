@@ -15,7 +15,10 @@ architecture behavioral of top_suma_c_tb is
     signal leds     : std_logic_vector(7 downto 0);
 begin
 
-u_top: entity top 
+u_top: entity top
+    generic map (
+        init_file => "../src/suma_c.txt" 
+    ) 
     port map (
         clk      => clk,
         nreset_in   => nreset,

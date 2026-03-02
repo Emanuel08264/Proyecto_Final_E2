@@ -5,6 +5,9 @@ use work.tipos.all;
 use work.all;
 
 entity top is
+    generic (
+        init_file : string := "../src/ram_init_gpio.txt" -- Archivo de inicialización para la RAM
+    );
     port (
         clk    : in std_logic;
         nreset_in : in std_logic;
@@ -147,7 +150,7 @@ begin
 
     u_phys_ram : entity ram_512x32
     generic map (
-        init_file => "../src/ram_init_gpio.txt"
+        init_file => init_file 
     )
     port map (
         clk      => clk,

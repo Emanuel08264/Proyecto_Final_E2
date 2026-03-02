@@ -4,7 +4,7 @@
 #define MASK_SCORE  0x20  // Switch 5 (0010 0000)
 #define MASK_NEXT   0x40  // Switch 6 (0100 0000)
 #define MASK_ENTER  0x80  // Switch 7 (1000 0000)
-#define MODO_SIMULACION 0
+#define MODO_SIMULACION 1
 
 int victorias = 0;
 unsigned int semilla = 0;

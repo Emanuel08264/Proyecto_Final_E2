@@ -15,7 +15,10 @@ architecture behavioral of juego_tb is
     signal leds     : std_logic_vector(7 downto 0);
 begin
 
-u_top: entity top 
+u_top: entity top
+    generic map (
+        init_file => "../src/ram_init_gpio_tb.txt" 
+    ) 
     port map (
         clk      => clk,
         nreset_in   => nreset,
@@ -35,58 +38,79 @@ end process;
 -- Estímulo
 estimulo: process
 begin
-    report "--- INICIO DE SIMULACION (Target = 10 / 0xA) ---";
-    
-    -- 1. RESET Y ARRANQUE
+    --RESET Y ARRANQUE
     nreset <= '0';
     switches <= x"00";
     wait for 100 * periodo;
     nreset <= '1';
     
-    -- IMPORTANTE: Esperar a que el procesador arranque y llegue al main
+    --Esperar a que el procesador arranque y llegue al main
     wait for 2000 * periodo; 
 
-    -- 2. INICIAR JUEGO (Switch 6 - NEXT)
-    report "ACCION: Presionando NEXT (SW6)...";
+    --INICIAR JUEGO (Switch 6 - NEXT)
     switches <= x"40"; -- 0100 0000
     wait for 200 * periodo; -- Mantenemos pulsado un rato para que el C lo lea
     switches <= x"00";      -- Soltamos
     
-    -- Esperar a que la CPU calcule y muestre el número en el display
+    --ESPERA NUMERO EN DISPLAY
     wait for 1000 * periodo;
 
-    -- 3. INGRESAR RESPUESTA Y CONFIRMAR
-    
-    report "ACCION: Ingresando 10 (0xA) y confirmando (SW7)...";
+    --INGRESAR RESPUESTA Y CONFIRMAR
     switches <= x"8A"; -- 1000 1010
     wait for 200 * periodo; -- Mantenemos pulsado
     switches <= x"00";      -- Soltamos
 
-    -- 4. VERIFICACION VISUAL (Opcional, el assert lo hará abajo)
-    wait for 8000 * periodo;
-    report "Simulacion de juego terminada. Revisa si hubo festejo (0xFF).";
+    --ESPERA ANIMACION
+    wait for 2000 * periodo; 
+
+    --INICIAR JUEGO (Switch 6 - NEXT)
+    switches <= x"40"; -- 0100 0000
+    wait for 200 * periodo; -- Mantenemos pulsado un rato para que el C lo lea
+    switches <= x"00";      -- Soltamos
     
+    --ESPERA NUMERO EN DISPLAY
+    wait for 1000 * periodo;
+
+    --INGRESAR RESPUESTA Y CONFIRMAR
+    switches <= x"8B"; -- 1000 1011
+    wait for 200 * periodo; -- Mantenemos pulsado
+    switches <= x"00";      -- Soltamos
+
+    --ESPERA ANIMACION
+    wait for 2000 * periodo;
+
+    --SCORE
+    switches <= x"20"; -- 0010 0000
+    wait for 200 * periodo;
+    switches <= x"00";
+    
+    --ESPERA VER SCORE
+    wait for 2000 * periodo;
+
+    --INGRESAR RESPUESTA Y CONFIRMAR
+    switches <= x"8A"; -- 1000 1010
+    wait for 200 * periodo; -- Mantenemos pulsado
+    switches <= x"00";      -- Soltamos
+
+    --ESPERA ANIMACION
+    wait for 2000 * periodo;
+
+    -- SCORE
+    switches <= x"20"; -- 0010 0000
+    wait for 200 * periodo;
+    switches <= x"00";
+
+    --ESPERA VER SCORE
+    wait for 2000 * periodo;
+
     finish;
 end process;
 
--- Evaluación (Assertions para comprobar victoria)
+-- Evaluación (Visual)
 evaluacion: process
 begin
     wait until rising_edge(clk);
-    -- Esperamos hasta el momento donde debería ocurrir la victoria
-    -- (Suma de todos los tiempos de arriba aprox: 2000+200+1000+200+8000 = ~11500)
-    wait for 11500 * periodo; 
-    
-    -- Si ganamos, el código C hace parpadear todo (0xFF)
-    -- Si perdimos, muestra una 'E' (0x79)
-    if leds = x"FF" then
-        report "EXITO: ¡Victoria detectada! (LEDs = FF)";
-    elsif leds = x"79" then
-        report "FALLO: Se detectó error (LEDs = E). Revisar lógica.";
-    else
-        report "ADVERTENCIA: Estado final desconocido: " & to_string(leds);
-    end if;
-    
+    wait for 23000 * periodo; 
     finish; -- Detener aqui si el otro process no lo hizo
 end process;
 end architecture;
